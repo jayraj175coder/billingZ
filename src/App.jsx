@@ -219,7 +219,7 @@ function App() {
               darkMode ? 'text-slate-400' : 'text-slate-500'
             }`}>
               <p className="font-medium">InvoiceFlow – Professional Invoice Management</p>
-              <p className="mt-1">Built with React & TailwindCSS • Perfect for SDE Internship Demo</p>
+              {/* <p className="mt-1">Built with React & TailwindCSS • Perfect for SDE Internship Demo</p> */}
             </div>
           </div>
         </div>
