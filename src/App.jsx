@@ -83,7 +83,7 @@ function App() {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `quotes-${new Date().toISOString().split('T')[0]}.csv`;
+    a.download = `invoices-${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
     window.URL.revokeObjectURL(url);
   };
@@ -105,64 +105,81 @@ function App() {
   };
 
   return (
-    <div className={`min-h-screen transition-colors duration-200 ${
-      darkMode ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'
+    <div className={`min-h-screen transition-all duration-300 ${
+      darkMode ? 'bg-slate-900 text-slate-100' : 'bg-slate-50 text-slate-900'
     }`}>
       {/* Navigation Header */}
-      <nav className={`transition-colors duration-200 ${
-        darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
-      } shadow-sm border-b`}>
+      <nav className={`sticky top-0 z-50 backdrop-blur-md transition-all duration-300 ${
+        darkMode 
+          ? 'bg-slate-800/80 border-slate-700 shadow-slate-900/20' 
+          : 'bg-white/80 border-slate-200 shadow-slate-900/10'
+      } shadow-lg border-b`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo and Brand */}
             <div className="flex items-center">
               <div className="flex-shrink-0">
                 <div className="flex items-center">
-                  <DocumentTextIcon className={`h-8 w-8 ${darkMode ? 'text-blue-400' : 'text-primary-600'}`} />
-                  <span className={`ml-2 text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                    ZenskarLite
-                  </span>
+                  <div className={`p-2 rounded-lg ${
+                    darkMode ? 'bg-blue-500/20' : 'bg-blue-500/10'
+                  }`}>
+                    <DocumentTextIcon className={`h-6 w-6 ${
+                      darkMode ? 'text-blue-400' : 'text-blue-600'
+                    }`} />
+                  </div>
+                  <div className="ml-3">
+                    <span className={`text-xl font-bold ${
+                      darkMode ? 'text-white' : 'text-slate-900'
+                    }`}>
+                      InvoiceFlow
+                    </span>
+                    <p className={`text-xs ${
+                      darkMode ? 'text-slate-400' : 'text-slate-500'
+                    }`}>
+                      Professional Billing
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Navigation Links */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3">
               <button
                 onClick={() => setCurrentPage('dashboard')}
-                className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                   currentPage === 'dashboard'
                     ? darkMode 
-                      ? 'bg-blue-900 text-blue-200' 
-                      : 'bg-primary-100 text-primary-700'
+                      ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25' 
+                      : 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
                     : darkMode
-                      ? 'text-gray-300 hover:text-white hover:bg-gray-700'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                      ? 'text-slate-300 hover:text-white hover:bg-slate-700/50'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
-                <ChartBarIcon className="h-5 w-5 mr-1" />
+                <ChartBarIcon className="h-5 w-5 mr-2" />
                 Dashboard
               </button>
               
               <button
                 onClick={() => setCurrentPage('create')}
-                className="btn-primary flex items-center gap-1"
+                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-medium rounded-lg transition-all duration-200 shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 transform hover:scale-105"
               >
                 <PlusIcon className="h-4 w-4" />
-                New Quote
+                New Invoice
               </button>
 
               {/* Export Button */}
               {quotes.length > 0 && (
                 <button
                   onClick={exportQuotes}
-                  className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  className={`flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                     darkMode 
-                      ? 'bg-gray-700 text-gray-200 hover:bg-gray-600' 
-                      : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+                      ? 'bg-slate-700 text-slate-200 hover:bg-slate-600 hover:shadow-lg' 
+                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:shadow-lg'
                   }`}
                 >
-                  <ArrowDownTrayIcon className="h-4 w-4 mr-1" />
+                  <ArrowDownTrayIcon className="h-4 w-4 mr-2" />
                   Export
                 </button>
               )}
@@ -170,10 +187,10 @@ function App() {
               {/* Dark Mode Toggle */}
               <button
                 onClick={() => setDarkMode(!darkMode)}
-                className={`p-2 rounded-md transition-colors ${
+                className={`p-2 rounded-lg transition-all duration-200 ${
                   darkMode 
-                    ? 'text-yellow-400 hover:bg-gray-700' 
-                    : 'text-gray-600 hover:bg-gray-100'
+                    ? 'text-amber-400 hover:bg-slate-700 hover:shadow-lg' 
+                    : 'text-slate-600 hover:bg-slate-100 hover:shadow-lg'
                 }`}
               >
                 {darkMode ? (
@@ -188,18 +205,22 @@ function App() {
       </nav>
 
       {/* Main Content */}
-      <main>
+      <main className="transition-all duration-300">
         {renderPage()}
       </main>
 
       {/* Footer */}
-      <footer className={`transition-colors duration-200 ${
-        darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
-      } border-t mt-16`}>
-        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          <div className="text-center text-sm text-gray-500">
-            <p>ZenskarLite – Professional Quote & Billing System</p>
-            <p className="mt-1">Built with React & TailwindCSS • Perfect for SDE Internship Demo</p>
+      <footer className={`transition-all duration-300 ${
+        darkMode ? 'bg-slate-800/50 border-slate-700' : 'bg-white/50 border-slate-200'
+      } border-t mt-16 backdrop-blur-sm`}>
+        <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <div className={`text-sm ${
+              darkMode ? 'text-slate-400' : 'text-slate-500'
+            }`}>
+              <p className="font-medium">InvoiceFlow – Professional Invoice Management</p>
+              <p className="mt-1">Built with React & TailwindCSS • Perfect for SDE Internship Demo</p>
+            </div>
           </div>
         </div>
       </footer>

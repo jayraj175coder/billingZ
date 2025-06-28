@@ -3,14 +3,14 @@ import BillingTable from '../components/BillingTable';
 
 const BillingDashboard = ({ quotes, onMarkAsPaid, onDelete }) => {
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Billing Dashboard
+    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-12 fade-in">
+          <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-4">
+            Invoice Dashboard
           </h1>
-          <p className="text-gray-600">
-            Manage all your quotes and track your revenue
+          <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+            Manage all your invoices and track your revenue with our comprehensive dashboard
           </p>
         </div>
         
