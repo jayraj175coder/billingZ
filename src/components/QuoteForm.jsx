@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CalculatorIcon, UserIcon, CubeIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline';
+import { CalculatorIcon, UserIcon, CubeIcon, CurrencyDollarIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 
 const QuoteForm = ({ onGenerateQuote }) => {
   const [formData, setFormData] = useState({
@@ -10,12 +10,58 @@ const QuoteForm = ({ onGenerateQuote }) => {
     taxRate: '0'
   });
 
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!formData.customerName.trim()) {
+      newErrors.customerName = 'Customer name is required';
+    }
+    
+    if (!formData.productName.trim()) {
+      newErrors.productName = 'Product name is required';
+    }
+    
+    if (!formData.quantity || parseFloat(formData.quantity) <= 0) {
+      newErrors.quantity = 'Quantity must be greater than 0';
+    }
+    
+    if (!formData.pricePerUnit || parseFloat(formData.pricePerUnit) <= 0) {
+      newErrors.pricePerUnit = 'Price must be greater than 0';
+    }
+    
+    if (parseFloat(formData.taxRate) < 0 || parseFloat(formData.taxRate) > 100) {
+      newErrors.taxRate = 'Tax rate must be between 0 and 100';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
+    
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+  };
+
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2
+    }).format(amount);
   };
 
   const calculateTotal = () => {
@@ -30,12 +76,17 @@ const QuoteForm = ({ onGenerateQuote }) => {
     return { subtotal, tax, total };
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.customerName || !formData.productName || !formData.quantity || !formData.pricePerUnit) {
-      alert('Please fill in all required fields');
+    
+    if (!validateForm()) {
       return;
     }
+    
+    setIsSubmitting(true);
+    
+    // Simulate API call delay for better UX
+    await new Promise(resolve => setTimeout(resolve, 500));
     
     const { subtotal, tax, total } = calculateTotal();
     const quote = {
@@ -56,6 +107,8 @@ const QuoteForm = ({ onGenerateQuote }) => {
       pricePerUnit: '',
       taxRate: '0'
     });
+    setErrors({});
+    setIsSubmitting(false);
   };
 
   const { subtotal, tax, total } = calculateTotal();
@@ -80,10 +133,16 @@ const QuoteForm = ({ onGenerateQuote }) => {
               name="customerName"
               value={formData.customerName}
               onChange={handleInputChange}
-              className="input-field"
+              className={`input-field ${errors.customerName ? 'border-red-500 focus:ring-red-500' : ''}`}
               placeholder="Enter customer name"
               required
             />
+            {errors.customerName && (
+              <p className="mt-1 text-sm text-red-600 flex items-center">
+                <ExclamationTriangleIcon className="h-4 w-4 mr-1" />
+                {errors.customerName}
+              </p>
+            )}
           </div>
 
           {/* Product Name */}
@@ -97,10 +156,16 @@ const QuoteForm = ({ onGenerateQuote }) => {
               name="productName"
               value={formData.productName}
               onChange={handleInputChange}
-              className="input-field"
+              className={`input-field ${errors.productName ? 'border-red-500 focus:ring-red-500' : ''}`}
               placeholder="Enter product name"
               required
             />
+            {errors.productName && (
+              <p className="mt-1 text-sm text-red-600 flex items-center">
+                <ExclamationTriangleIcon className="h-4 w-4 mr-1" />
+                {errors.productName}
+              </p>
+            )}
           </div>
 
           {/* Quantity */}
@@ -113,11 +178,17 @@ const QuoteForm = ({ onGenerateQuote }) => {
               name="quantity"
               value={formData.quantity}
               onChange={handleInputChange}
-              className="input-field"
+              className={`input-field ${errors.quantity ? 'border-red-500 focus:ring-red-500' : ''}`}
               placeholder="0"
               min="1"
               required
             />
+            {errors.quantity && (
+              <p className="mt-1 text-sm text-red-600 flex items-center">
+                <ExclamationTriangleIcon className="h-4 w-4 mr-1" />
+                {errors.quantity}
+              </p>
+            )}
           </div>
 
           {/* Price Per Unit */}
@@ -131,12 +202,18 @@ const QuoteForm = ({ onGenerateQuote }) => {
               name="pricePerUnit"
               value={formData.pricePerUnit}
               onChange={handleInputChange}
-              className="input-field"
+              className={`input-field ${errors.pricePerUnit ? 'border-red-500 focus:ring-red-500' : ''}`}
               placeholder="0.00"
               min="0"
               step="0.01"
               required
             />
+            {errors.pricePerUnit && (
+              <p className="mt-1 text-sm text-red-600 flex items-center">
+                <ExclamationTriangleIcon className="h-4 w-4 mr-1" />
+                {errors.pricePerUnit}
+              </p>
+            )}
           </div>
 
           {/* Tax Rate */}
@@ -149,40 +226,61 @@ const QuoteForm = ({ onGenerateQuote }) => {
               name="taxRate"
               value={formData.taxRate}
               onChange={handleInputChange}
-              className="input-field"
+              className={`input-field ${errors.taxRate ? 'border-red-500 focus:ring-red-500' : ''}`}
               placeholder="0"
               min="0"
               max="100"
               step="0.01"
             />
+            {errors.taxRate && (
+              <p className="mt-1 text-sm text-red-600 flex items-center">
+                <ExclamationTriangleIcon className="h-4 w-4 mr-1" />
+                {errors.taxRate}
+              </p>
+            )}
           </div>
         </div>
 
         {/* Live Preview */}
-        <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-3">Quote Preview</h3>
-          <div className="space-y-2 text-sm">
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-200">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <CalculatorIcon className="h-5 w-5 mr-2 text-blue-600" />
+            Quote Preview
+          </h3>
+          <div className="space-y-3 text-sm">
             <div className="flex justify-between">
               <span className="text-gray-600">Subtotal:</span>
-              <span className="font-medium">${subtotal.toFixed(2)}</span>
+              <span className="font-medium">{formatCurrency(subtotal)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Tax ({formData.taxRate}%):</span>
-              <span className="font-medium">${tax.toFixed(2)}</span>
+              <span className="font-medium">{formatCurrency(tax)}</span>
             </div>
-            <div className="flex justify-between text-lg font-bold text-primary-600 border-t pt-2">
+            <div className="flex justify-between text-lg font-bold text-primary-600 border-t pt-3">
               <span>Total:</span>
-              <span>${total.toFixed(2)}</span>
+              <span>{formatCurrency(total)}</span>
             </div>
           </div>
         </div>
 
         <button
           type="submit"
-          className="btn-primary w-full flex items-center justify-center gap-2"
+          disabled={isSubmitting}
+          className={`btn-primary w-full flex items-center justify-center gap-2 ${
+            isSubmitting ? 'opacity-75 cursor-not-allowed' : ''
+          }`}
         >
-          <CalculatorIcon className="h-5 w-5" />
-          Generate Quote
+          {isSubmitting ? (
+            <>
+              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+              Generating Quote...
+            </>
+          ) : (
+            <>
+              <CalculatorIcon className="h-5 w-5" />
+              Generate Quote
+            </>
+          )}
         </button>
       </form>
     </div>
