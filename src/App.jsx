@@ -225,7 +225,7 @@ function App() {
               </button>
 
               {/* Demo Data Button */}
-              <button
+              {/* <button
                 onClick={resetToDemoData}
                 className={`flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                   darkMode 
@@ -233,9 +233,9 @@ function App() {
                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:shadow-lg'
                 }`}
               >
-                <PlayIcon className="h-4 w-4 mr-2" />
-                Demo Data
-              </button>
+                // {/* <PlayIcon className="h-4 w-4 mr-2" /> */}
+                {/* Demo Data */}
+              {/* </button> */} 
 
               {/* Export Button */}
               {quotes.length > 0 && (
