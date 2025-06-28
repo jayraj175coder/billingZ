@@ -5,7 +5,8 @@ import {
   PlusIcon,
   SunIcon,
   MoonIcon,
-  ArrowDownTrayIcon
+  ArrowDownTrayIcon,
+  PlayIcon
 } from '@heroicons/react/24/outline';
 import CreateQuote from './pages/CreateQuote';
 import BillingDashboard from './pages/BillingDashboard';
@@ -15,13 +16,61 @@ function App() {
   const [currentPage, setCurrentPage] = useState('dashboard');
   const [darkMode, setDarkMode] = useState(false);
 
+  // Demo data for initial display
+  const demoData = [
+    {
+      id: 1001,
+      customerName: "TechCorp Solutions",
+      productName: "Web Development Services",
+      quantity: "1",
+      pricePerUnit: "2500.00",
+      taxRate: "8.5",
+      subtotal: 2500,
+      tax: 212.5,
+      total: 2712.5,
+      status: "paid",
+      createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString() // 2 days ago
+    },
+    {
+      id: 1002,
+      customerName: "Design Studio Pro",
+      productName: "UI/UX Design Package",
+      quantity: "2",
+      pricePerUnit: "1200.00",
+      taxRate: "0",
+      subtotal: 2400,
+      tax: 0,
+      total: 2400,
+      status: "unpaid",
+      createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString() // 1 day ago
+    },
+    {
+      id: 1003,
+      customerName: "Startup Innovate",
+      productName: "Mobile App Development",
+      quantity: "1",
+      pricePerUnit: "5000.00",
+      taxRate: "10",
+      subtotal: 5000,
+      tax: 500,
+      total: 5500,
+      status: "paid",
+      createdAt: new Date().toISOString() // today
+    }
+  ];
+
   // Load quotes and theme from localStorage on component mount
   useEffect(() => {
     const savedQuotes = localStorage.getItem('billingQuotes');
     const savedTheme = localStorage.getItem('billingTheme');
     
     if (savedQuotes) {
-      setQuotes(JSON.parse(savedQuotes));
+      const parsedQuotes = JSON.parse(savedQuotes);
+      // Only use saved quotes if there are any, otherwise use demo data
+      setQuotes(parsedQuotes.length > 0 ? parsedQuotes : demoData);
+    } else {
+      // First time user - show demo data
+      setQuotes(demoData);
     }
     
     if (savedTheme) {
@@ -58,14 +107,20 @@ function App() {
   };
 
   const handleDeleteQuote = (quoteId) => {
-    if (window.confirm('Are you sure you want to delete this quote?')) {
+    if (window.confirm('Are you sure you want to delete this invoice?')) {
       setQuotes(prev => prev.filter(quote => quote.id !== quoteId));
+    }
+  };
+
+  const resetToDemoData = () => {
+    if (window.confirm('This will reset all data to demo invoices. Continue?')) {
+      setQuotes(demoData);
     }
   };
 
   const exportQuotes = () => {
     const csvContent = [
-      ['Quote ID', 'Customer', 'Product', 'Quantity', 'Price', 'Tax Rate', 'Total', 'Status', 'Date'],
+      ['Invoice ID', 'Customer', 'Product', 'Quantity', 'Price', 'Tax Rate', 'Total', 'Status', 'Date'],
       ...quotes.map(quote => [
         quote.id,
         quote.customerName,
@@ -167,6 +222,19 @@ function App() {
               >
                 <PlusIcon className="h-4 w-4" />
                 New Invoice
+              </button>
+
+              {/* Demo Data Button */}
+              <button
+                onClick={resetToDemoData}
+                className={`flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  darkMode 
+                    ? 'bg-slate-700 text-slate-200 hover:bg-slate-600 hover:shadow-lg' 
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:shadow-lg'
+                }`}
+              >
+                <PlayIcon className="h-4 w-4 mr-2" />
+                Demo Data
               </button>
 
               {/* Export Button */}
